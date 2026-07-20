@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aman Goyal — Full Stack Developer (MERN)</title>
+  <meta name="description" content="Aman Goyal — Full Stack MERN Developer. MCA student at KIET Ghaziabad. Building scalable web applications with React, Node.js, MongoDB & AI integration." />
+  <meta name="keywords" content="Aman Goyal, Full Stack Developer, MERN Stack, React Developer, Node.js, MongoDB, JavaScript, Web Developer Ghaziabad" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Lottie web component player (used for the animated avatar in the profile card) -->
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
+
+  <style>
+    /* ── TOKENS ──────────────────────────────────────── */
+    :root {
+      --bg:       #060B18;
+      --bg2:      #0D1424;
+      --bg3:      #111827;
+      --card:     #0F1729;
+      --border:   rgba(255,255,255,0.07);
+      --primary:  #3B82F6;
+      --primary2: #60A5FA;
+      --accent:   #818CF8;
+      --gold:     #F59E0B;
+      --text:     #F1F5F9;
+      --sub:      #94A3B8;
+      --muted:    #64748B;
+      --shadow:   rgba(0,0,0,0.4);
+      --glow:     rgba(59,130,246,0.15);
+      --ff-head:  'Space Grotesk', sans-serif;
+      --ff-body:  'Inter', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--ff-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ───────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    /* ── GLOW BG ─────────────────────────────────────── */
+    .bg-glow {
+      position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 600px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(59,130,246,0.08) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── LAYOUT ──────────────────────────────────────── */
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ── NAVBAR ──────────────────────────────────────── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(6,11,24,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow .3s;
+    }
+    #navbar.scrolled { box-shadow: 0 4px 32px rgba(0,0,0,0.5); }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--ff-head); font-weight: 700; font-size: 1.2rem;
+      color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--sub); text-decoration: none; font-size: .875rem; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--primary); color: #fff; border: none; cursor: pointer;
+      padding: .5rem 1.2rem; border-radius: 6px; font-size: .85rem; font-weight: 600;
+      font-family: var(--ff-body); text-decoration: none;
+      transition: background .2s, box-shadow .2s;
+    }
+    .nav-cta:hover { background: var(--primary2); box-shadow: 0 0 20px rgba(59,130,246,.4); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--sub); border-radius: 2px; transition: .3s; }
+    #mobile-menu {
+      display: none; position: fixed; top: 64px; left: 0; right: 0; z-index: 99;
+      background: rgba(6,11,24,0.97); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border); padding: 1.5rem 24px;
+      flex-direction: column; gap: 1.2rem;
+    }
+    #mobile-menu a { color: var(--sub); text-decoration: none; font-size: 1rem; font-weight: 500; }
+
+    /* ── HERO ────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 100px 0 60px;
+    }
+    .hero-inner { display: grid; grid-template-columns: 1fr 320px; gap: 4rem; align-items: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.25);
+      padding: .35rem 1rem; border-radius: 100px; margin-bottom: 1.5rem;
+      font-size: .75rem; font-weight: 700; color: var(--primary2);
+      letter-spacing: .08em; text-transform: uppercase;
+    }
+    .hero-badge .live { width: 6px; height: 6px; border-radius: 50%; background: #22C55E; animation: pulse 1.5s infinite; }
+    h1.hero-title {
+      font-family: var(--ff-head);
+      font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+      font-weight: 800; line-height: 1.1; letter-spacing: -.03em;
+      margin-bottom: 1.2rem;
+    }
+    .hero-title .gradient {
+      background: linear-gradient(135deg, #60A5FA 0%, #818CF8 50%, #A78BFA 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub { font-size: 1rem; color: var(--sub); max-width: 520px; line-height: 1.8; margin-bottom: 2rem; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+    .btn-primary {
+      background: var(--primary); color: #fff; border: none; cursor: pointer;
+      padding: .8rem 1.8rem; border-radius: 8px; font-size: .92rem; font-weight: 600;
+      font-family: var(--ff-body); text-decoration: none; display: inline-block;
+      transition: background .2s, box-shadow .2s, transform .2s;
+      box-shadow: 0 0 0 rgba(59,130,246,0);
+    }
+    .btn-primary:hover { background: #2563EB; box-shadow: 0 0 24px rgba(59,130,246,.4); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border); cursor: pointer;
+      padding: .8rem 1.8rem; border-radius: 8px; font-size: .92rem; font-weight: 600;
+      font-family: var(--ff-body); text-decoration: none; display: inline-block;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-outline:hover { border-color: var(--primary); background: rgba(59,130,246,.05); }
+    .hero-stats { display: flex; gap: 2rem; flex-wrap: wrap; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .stat { display: flex; flex-direction: column; }
+    .stat-num { font-family: var(--ff-head); font-size: 1.8rem; font-weight: 700; color: var(--text); line-height: 1; }
+    .stat-num span { color: var(--primary); }
+    .stat-label { font-size: .72rem; color: var(--muted); margin-top: .3rem; text-transform: uppercase; letter-spacing: .05em; }
+
+    /* ── PROFILE CARD ────────────────────────────────── */
+    .profile-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.8rem;
+      box-shadow: 0 24px 64px rgba(0,0,0,.5), 0 0 0 1px var(--border);
+      display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
+      position: relative; overflow: hidden;
+    }
+    .profile-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .avatar-wrap { position: relative; width: 110px; height: 110px; }
+    .avatar-img {
+      width: 110px; height: 110px; border-radius: 14px;
+      border: 2px solid var(--border); display: block;
+      background: rgba(59,130,246,.06);
+      overflow: hidden;
+    }
+    .avatar-badge {
+      position: absolute; bottom: -6px; right: -6px;
+      background: #22C55E; border: 2px solid var(--bg);
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .55rem; font-weight: 800; color: #fff;
+      z-index: 2;
+    }
+    .profile-name { font-family: var(--ff-head); font-weight: 700; font-size: 1.05rem; color: var(--text); text-align: center; }
+    .profile-role { font-size: .8rem; color: var(--sub); text-align: center; line-height: 1.5; }
+    .profile-tags { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: center; }
+    .ptag {
+      font-size: .68rem; font-weight: 700; padding: .25rem .65rem; border-radius: 100px;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .ptag-blue { background: rgba(59,130,246,.12); color: var(--primary2); border: 1px solid rgba(59,130,246,.2); }
+    .ptag-purple { background: rgba(129,140,248,.1); color: var(--accent); border: 1px solid rgba(129,140,248,.2); }
+    .ptag-green { background: rgba(34,197,94,.1); color: #4ADE80; border: 1px solid rgba(34,197,94,.2); }
+    .profile-links { width: 100%; display: flex; flex-direction: column; gap: .55rem; }
+    .plink {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .65rem .9rem; border-radius: 8px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--border);
+      font-size: .82rem; transition: border-color .2s, background .2s;
+      text-decoration: none; color: var(--text);
+    }
+    .plink:hover { border-color: var(--primary); background: rgba(59,130,246,.05); }
+    .plink-label { color: var(--muted); font-size: .75rem; }
+    .plink-val { color: var(--sub); font-size: .8rem; display: flex; align-items: center; gap: .4rem; }
+    .plink-val i { color: var(--primary); font-size: .85rem; }
+
+    /* ── SECTION COMMON ──────────────────────────────── */
+    section { padding: 90px 0; }
+    .section-label {
+      font-size: .72rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--primary2); margin-bottom: .7rem; display: block;
+    }
+    .section-title {
+      font-family: var(--ff-head); font-size: clamp(1.7rem, 3vw, 2.4rem);
+      font-weight: 700; line-height: 1.2; letter-spacing: -.02em; color: var(--text); margin-bottom: 1rem;
+    }
+    .section-sub { color: var(--sub); max-width: 500px; line-height: 1.8; }
+    .section-header-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem; }
+
+    /* ── ABOUT ───────────────────────────────────────── */
+    #about { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center; }
+    .about-text p { color: var(--sub); line-height: 1.9; margin-bottom: 1rem; font-size: .95rem; }
+    .about-highlights { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1.8rem; }
+    .highlight-item {
+      display: flex; align-items: center; gap: .65rem;
+      padding: .75rem 1rem; border-radius: 8px;
+      background: rgba(59,130,246,.05); border: 1px solid rgba(59,130,246,.1);
+      font-size: .82rem; color: var(--sub);
+    }
+    .highlight-item i { color: var(--primary); font-size: .85rem; flex-shrink: 0; }
+    .about-visual { display: flex; flex-direction: column; gap: 1rem; }
+    .info-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+    }
+    .info-card-label { font-size: .72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .4rem; }
+    .info-card-value { font-family: var(--ff-head); font-weight: 600; color: var(--text); font-size: .95rem; }
+    .info-card-sub { font-size: .8rem; color: var(--sub); margin-top: .2rem; }
+
+    /* ── EXPERIENCE ──────────────────────────────────── */
+    #experience { background: var(--bg); }
+    .timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .timeline::before {
+      content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 1px;
+      background: linear-gradient(to bottom, var(--primary), transparent);
+    }
+    .tl-item { display: flex; gap: 2rem; padding-bottom: 2.5rem; position: relative; }
+    .tl-dot {
+      width: 33px; height: 33px; border-radius: 50%; flex-shrink: 0;
+      background: var(--card); border: 2px solid var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; color: var(--primary); z-index: 1;
+      box-shadow: 0 0 16px rgba(59,130,246,.3);
+    }
+    .tl-content {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.5rem; flex: 1;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .tl-content:hover { border-color: rgba(59,130,246,.3); box-shadow: 0 8px 32px rgba(0,0,0,.3); }
+    .tl-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: .5rem; margin-bottom: .5rem; }
+    .tl-company { font-family: var(--ff-head); font-weight: 700; font-size: 1rem; color: var(--text); }
+    .tl-period {
+      font-size: .72rem; font-weight: 600; padding: .25rem .7rem; border-radius: 100px;
+      background: rgba(59,130,246,.1); color: var(--primary2); border: 1px solid rgba(59,130,246,.2);
+    }
+    .tl-role { font-size: .82rem; color: var(--primary2); font-weight: 600; margin-bottom: .75rem; }
+    .tl-desc { font-size: .85rem; color: var(--sub); line-height: 1.75; }
+    .tl-tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; }
+    .tl-tag {
+      font-size: .7rem; font-weight: 600; padding: .2rem .6rem; border-radius: 4px;
+      background: rgba(255,255,255,.04); color: var(--muted); border: 1px solid var(--border);
+    }
+
+    /* ── PROJECTS ────────────────────────────────────── */
+    #projects { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .project-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      overflow: hidden; transition: transform .25s, border-color .25s, box-shadow .25s;
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover { transform: translateY(-6px); border-color: rgba(59,130,246,.35); box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+    .project-card.featured { grid-column: span 3; display: grid; grid-template-columns: 1fr 1fr; }
+    .project-thumb {
+      height: 180px; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(59,130,246,.1), rgba(129,140,248,.05));
+      font-size: 3rem; position: relative; overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .project-card.featured .project-thumb { height: 100%; border-bottom: none; border-right: 1px solid var(--border); }
+    .project-thumb-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(6,11,24,.6));
+    }
+    .project-body { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; }
+    .project-eyebrow {
+      font-size: .68rem; font-weight: 700; color: var(--primary2);
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: .5rem;
+    }
+    .project-title { font-family: var(--ff-head); font-weight: 700; font-size: 1.05rem; color: var(--text); margin-bottom: .6rem; }
+    .project-desc { font-size: .84rem; color: var(--sub); line-height: 1.75; flex: 1; }
+    .project-stack { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: 1rem; }
+    .stack-tag {
+      font-size: .68rem; font-weight: 600; padding: .2rem .55rem; border-radius: 4px;
+      background: rgba(59,130,246,.08); color: var(--primary2);
+      border: 1px solid rgba(59,130,246,.15);
+    }
+    .project-links { display: flex; gap: .75rem; margin-top: 1.2rem; }
+    .proj-link {
+      font-size: .78rem; font-weight: 600; color: var(--sub); text-decoration: none;
+      display: flex; align-items: center; gap: .35rem; transition: color .2s;
+    }
+    .proj-link:hover { color: var(--primary2); }
+    .proj-link i { font-size: .8rem; }
+
+    /* ── SKILLS ──────────────────────────────────────── */
+    #skills { background: var(--bg); }
+    .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .skill-group {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem;
+      transition: border-color .2s;
+    }
+    .skill-group:hover { border-color: rgba(59,130,246,.25); }
+    .skill-group-title {
+      font-family: var(--ff-head); font-size: .82rem; font-weight: 700;
+      color: var(--text); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .skill-group-title i { color: var(--primary); font-size: .9rem; }
+    .skill-tags { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .skill-tag {
+      font-size: .76rem; font-weight: 600; padding: .3rem .7rem; border-radius: 6px;
+      background: rgba(255,255,255,.04); color: var(--sub); border: 1px solid var(--border);
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .skill-tag:hover { border-color: var(--primary); color: var(--primary2); background: rgba(59,130,246,.08); }
+    .skill-tag.highlight { background: rgba(59,130,246,.1); color: var(--primary2); border-color: rgba(59,130,246,.25); }
+
+    /* ── EDUCATION ───────────────────────────────────── */
+    #education { background: var(--bg2); border-top: 1px solid var(--border); }
+    .edu-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 2rem; display: flex; gap: 1.5rem; align-items: flex-start;
+      transition: border-color .2s, box-shadow .2s; max-width: 700px;
+    }
+    .edu-card:hover { border-color: rgba(59,130,246,.3); box-shadow: 0 8px 32px rgba(0,0,0,.3); }
+    .edu-icon {
+      width: 52px; height: 52px; border-radius: 12px;
+      background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .edu-degree { font-family: var(--ff-head); font-weight: 700; font-size: 1rem; color: var(--text); }
+    .edu-school { font-size: .85rem; color: var(--primary2); font-weight: 600; margin: .3rem 0; }
+    .edu-meta { font-size: .8rem; color: var(--muted); }
+
+    /* ── CONTACT / CAL ───────────────────────────────── */
+    #contact { background: var(--bg); border-top: 1px solid var(--border); padding-bottom: 160px; }
+    .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; align-items: start; }
+    .contact-info { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1rem 1.2rem; background: var(--card);
+      border: 1px solid var(--border); border-radius: 10px;
+      text-decoration: none; transition: border-color .2s;
+    }
+    .contact-item:hover { border-color: rgba(59,130,246,.3); }
+    .contact-icon {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; color: var(--primary2); flex-shrink: 0;
+    }
+    .contact-item h4 { font-size: .75rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .2rem; }
+    .contact-item p { font-size: .88rem; color: var(--sub); font-weight: 500; }
+    .cal-container {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      overflow: hidden; min-height: 500px;
+    }
+    #my-cal-inline { width: 100%; min-height: 500px; }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      background: var(--bg2); border-top: 1px solid var(--border);
+      padding: 2rem 0 8rem;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-left { font-size: .82rem; color: var(--muted); }
+    .footer-left span { color: var(--primary); }
+    .footer-links { display: flex; gap: 1.2rem; }
+    .footer-links a {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); text-decoration: none; font-size: .85rem;
+      transition: color .2s, border-color .2s;
+    }
+    .footer-links a:hover { color: var(--primary2); border-color: rgba(59,130,246,.3); }
+
+    /* ── BACK TO TOP ─────────────────────────────────── */
+    #btt {
+      position: fixed; bottom: 6.5rem; right: 2rem; z-index: 99;
+      width: 40px; height: 40px; border-radius: 8px;
+      background: var(--primary); border: none; cursor: pointer;
+      color: #fff; font-size: .9rem; display: none; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(59,130,246,.4); transition: background .2s;
+    }
+    #btt:hover { background: #2563EB; }
+    #btt.show { display: flex; }
+
+    /* ── SCROLL REVEAL ───────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── FLOATING DOCK (Aceternity-style, vanilla build) ─
+       Original: https://ui.aceternity.com/components/floating-dock
+       This is a plain HTML/CSS/JS port of that component (the real one
+       ships as a React + Framer Motion component, which this static
+       site doesn't build with) — same magnify-on-hover dock behaviour. */
+    #dock-wrap {
+      position: fixed; left: 50%; bottom: 1.1rem; transform: translateX(-50%);
+      z-index: 200;
+    }
+    #dock {
+      display: flex; align-items: flex-end; gap: .45rem;
+      padding: .4rem .5rem;
+      background: rgba(15,23,41,.75);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.5);
+    }
+    .dock-item {
+      position: relative;
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--sub); text-decoration: none; font-size: .9rem;
+      cursor: pointer;
+      transform-origin: bottom center;
+      transition: background .15s, color .15s, border-color .15s, width .12s, height .12s;
+      flex-shrink: 0;
+    }
+    .dock-item:hover, .dock-item:focus-visible { color: var(--primary2); border-color: rgba(59,130,246,.35); background: rgba(59,130,246,.1); outline: none; }
+    .dock-tooltip {
+      position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(4px);
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text); font-size: .72rem; font-weight: 600;
+      padding: .3rem .6rem; border-radius: 6px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s;
+    }
+    .dock-item:hover .dock-tooltip, .dock-item:focus-visible .dock-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+    @media (prefers-reduced-motion: reduce) {
+      .dock-item { transition: none; }
+    }
+    @media (max-width: 600px) {
+      #dock { gap: .4rem; padding: .45rem .55rem; }
+      .dock-item { width: 38px; height: 38px; font-size: .95rem; }
+      .dock-tooltip { display: none; }
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 960px) {
+      .hero-inner, .about-grid, .contact-wrapper { grid-template-columns: 1fr; }
+      .projects-grid, .skills-grid { grid-template-columns: repeat(2, 1fr); }
+      .project-card.featured { grid-column: span 2; grid-template-columns: 1fr; }
+      .project-card.featured .project-thumb { height: 180px; border-right: none; border-bottom: 1px solid var(--border); }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .profile-card { display: none; }
+    }
+    @media (max-width: 600px) {
+      .projects-grid, .skills-grid { grid-template-columns: 1fr; }
+      .project-card.featured { grid-column: span 1; }
+      .about-highlights { grid-template-columns: 1fr; }
+      section { padding: 60px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<!-- ── NAVBAR ─────────────────────────────────────────── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo"><span class="dot"></span>Aman Goyal</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Book a Call</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu">
+  <a href="#about" class="mob-link">About</a>
+  <a href="#experience" class="mob-link">Experience</a>
+  <a href="#projects" class="mob-link">Projects</a>
+  <a href="#skills" class="mob-link">Skills</a>
+  <a href="#contact" class="mob-link">Contact</a>
+</div>
+
+<!-- ── HERO ───────────────────────────────────────────── -->
+<section id="hero">
+  <div class="wrapper">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge reveal">
+          <span class="live"></span>
+          Open to Full-Time &amp; Remote Roles
+        </div>
+        <h1 class="hero-title reveal">
+          Full Stack Developer<br />
+          <span class="gradient">building scalable</span><br />
+          web products
+        </h1>
+        <p class="hero-sub reveal">
+          I'm <strong style="color:var(--text)">Aman Goyal</strong> — MCA student at KIET Ghaziabad &amp;
+          Web Development Team Lead at TAC Services. I build end-to-end web applications
+          using the MERN stack with a focus on performance, clean architecture, and real-world impact.
+        </p>
+        <div class="hero-actions reveal">
+          <a href="#contact" class="btn-primary"><i class="fas fa-calendar-alt" style="margin-right:.5rem"></i>Book a Call</a>
+          <a href="https://drive.google.com/uc?export=download&id=1F5juddhET0tyEPlXwJJVAWAqtpNq6wvH" class="btn-outline" download><i class="fas fa-download" style="margin-right:.5rem"></i>Download Resume</a>
+        </div>
+        <div class="hero-stats reveal">
+          <div class="stat">
+            <span class="stat-num">2<span>+</span></span>
+            <span class="stat-label">Internships</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">3<span>+</span></span>
+            <span class="stat-label">Live Projects</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">4<span>+</span></span>
+            <span class="stat-label">Team Managed</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">1<span>yr</span></span>
+            <span class="stat-label">Experience</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile card -->
+      <div class="profile-card reveal">
+        <div class="avatar-wrap">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCHKqOvEMJ7blfibB9dkw5C67WT4QTygglwyYlThcGwA&s=10" alt="Aman Goyal" class="avatar-img" />
+          <div class="avatar-badge">✓</div>
+        </div>
+        <div class="profile-name">Aman Goyal</div>
+        <div class="profile-role">Full Stack Developer (MERN)<br/>Web Dev Team Lead @ TAC Services</div>
+        <div class="profile-tags">
+          <span class="ptag ptag-blue">React.js</span>
+          <span class="ptag ptag-green">Node.js</span>
+          <span class="ptag ptag-purple">MongoDB</span>
+        </div>
+        <div class="profile-links">
+          <a class="plink" href="mailto:amangoel2895@gmail.com">
+            <span class="plink-label">Email</span>
+            <span class="plink-val"><i class="fas fa-envelope"></i>amangoel2895@gmail.com</span>
+          </a>
+          <a class="plink" href="https://github.com/Aman-2895" target="_blank">
+            <span class="plink-label">GitHub</span>
+            <span class="plink-val"><i class="fab fa-github"></i>Aman-2895</span>
+          </a>
+          <a class="plink" href="https://www.linkedin.com/in/amangoyal2895" target="_blank">
+            <span class="plink-label">LinkedIn</span>
+            <span class="plink-val"><i class="fab fa-linkedin"></i>Visit Profile</span>
+          </a>
+          <a class="plink" href="https://drive.google.com/uc?export=download&id=1F5juddhET0tyEPlXwJJVAWAqtpNq6wvH" download>
+            <span class="plink-label">Resume</span>
+            <span class="plink-val"><i class="fas fa-file-pdf"></i>Download PDF</span>
+          </a>
+          <a class="plink" href="#contact">
+            <span class="plink-label">Location</span>
+            <span class="plink-val"><i class="fas fa-map-marker-alt"></i>Ghaziabad, NCR, India</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ───────────────────────────────────────────── -->
+<section id="about">
+  <div class="wrapper">
+    <div class="about-grid">
+      <div class="about-text">
+        <span class="section-label reveal">About Me</span>
+        <h2 class="section-title reveal">Passionate about building<br/>things that matter</h2>
+        <p class="reveal">
+          I'm an MCA student at KIET Group of Institutions, Ghaziabad (2025–2027), currently
+          working as a <strong style="color:var(--text)">Web Development Team Lead</strong> at
+          TAC Services — leading a 4-member team to deliver production-grade software.
+        </p>
+        <p class="reveal">
+          My strongest project is <strong style="color:var(--text)">NextHire</strong> — an
+          AI-powered job prep platform I built entirely solo using the MERN stack with
+          Gemini AI integration. It's the kind of project that demonstrates not just technical
+          skill but the ability to take an idea from zero to deployed product.
+        </p>
+        <p class="reveal">
+          I'm actively seeking <strong style="color:var(--text)">full-stack developer roles</strong>
+          (remote-first preferred) where I can contribute immediately, grow fast, and build
+          software that solves real problems.
+        </p>
+        <div class="about-highlights reveal">
+          <div class="highlight-item"><i class="fas fa-code"></i> MERN Stack Development</div>
+          <div class="highlight-item"><i class="fas fa-robot"></i> Gemini AI Integration</div>
+          <div class="highlight-item"><i class="fas fa-users"></i> Team Leadership (4 devs)</div>
+          <div class="highlight-item"><i class="fas fa-database"></i> REST API Design</div>
+          <div class="highlight-item"><i class="fas fa-shield-alt"></i> JWT Authentication</div>
+          <div class="highlight-item"><i class="fas fa-rocket"></i> Vite + React Router</div>
+        </div>
+      </div>
+
+      <div class="about-visual">
+        <div class="info-card reveal">
+          <div class="info-card-label">Currently at</div>
+          <div class="info-card-value">TAC Services</div>
+          <div class="info-card-sub">Web Development Team Lead · Ghaziabad</div>
+        </div>
+        <div class="info-card reveal">
+          <div class="info-card-label">Education</div>
+          <div class="info-card-value">Master of Computer Applications</div>
+          <div class="info-card-sub">KIET Group of Institutions · 2025–2027</div>
+        </div>
+        <div class="info-card reveal">
+          <div class="info-card-label">Looking for</div>
+          <div class="info-card-value">Full Stack Developer Roles</div>
+          <div class="info-card-sub">Remote-first · Open to relocation · India</div>
+        </div>
+        <div class="info-card reveal">
+          <div class="info-card-label">Core strength</div>
+          <div class="info-card-value">End-to-End Product Delivery</div>
+          <div class="info-card-sub">From wireframe to production deployment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ──────────────────────────────────────── -->
+<section id="experience">
+  <div class="wrapper">
+    <div class="section-header-row">
+      <div>
+        <span class="section-label reveal">Work Experience</span>
+        <h2 class="section-title reveal">Where I've contributed</h2>
+      </div>
+    </div>
+    <div class="timeline">
+
+      <!-- TAC Services -->
+      <div class="tl-item reveal">
+        <div class="tl-dot"><i class="fas fa-code"></i></div>
+        <div class="tl-content">
+          <div class="tl-top">
+            <div class="tl-company">TAC Services</div>
+            <span class="tl-period">June 2025 – Present</span>
+          </div>
+          <div class="tl-role">Web Development Team Lead (Intern)</div>
+          <div class="tl-desc">
+            Leading a 4-member development team building the company's full MERN stack website from scratch.
+            Responsible for architecture decisions, code reviews, task delegation, sprint planning, and end-to-end
+            deployment. Migrated the entire codebase to MERN, resolved MongoDB Atlas connectivity issues,
+            configured Vite proxy, and set up Railway (backend) and Vercel (frontend) deployment pipelines.
+            First point of contact between the development team and company leadership.
+          </div>
+          <div class="tl-tags">
+            <span class="tl-tag">React.js</span>
+            <span class="tl-tag">Node.js</span>
+            <span class="tl-tag">Express.js</span>
+            <span class="tl-tag">MongoDB</span>
+            <span class="tl-tag">Vite</span>
+            <span class="tl-tag">REST APIs</span>
+            <span class="tl-tag">Team Leadership</span>
+            <span class="tl-tag">Railway</span>
+            <span class="tl-tag">Vercel</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TechHub Technology -->
+      <div class="tl-item reveal">
+        <div class="tl-dot"><i class="fas fa-laptop-code"></i></div>
+        <div class="tl-content">
+          <div class="tl-top">
+            <div class="tl-company">TechHub Technology</div>
+            <span class="tl-period">2024</span>
+          </div>
+          <div class="tl-role">Web Development Intern</div>
+          <div class="tl-desc">
+            Worked on frontend web development projects, gaining hands-on experience with
+            responsive design, UI implementation, and JavaScript-driven interactivity.
+            Contributed to real client deliverables, developed a strong foundation in
+            clean code practices, and sharpened problem-solving skills in a professional setting.
+          </div>
+          <div class="tl-tags">
+            <span class="tl-tag">HTML5</span>
+            <span class="tl-tag">CSS3</span>
+            <span class="tl-tag">JavaScript</span>
+            <span class="tl-tag">Responsive Design</span>
+            <span class="tl-tag">Git</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ────────────────────────────────────────── -->
+<section id="projects">
+  <div class="wrapper">
+    <div class="section-header-row">
+      <div>
+        <span class="section-label reveal">Projects</span>
+        <h2 class="section-title reveal">Things I've built</h2>
+      </div>
+      <a href="https://github.com/Aman-2895" target="_blank" class="btn-outline reveal" style="font-size:.82rem;padding:.5rem 1.1rem">
+        <i class="fab fa-github" style="margin-right:.4rem"></i>View GitHub
+      </a>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- NextHire — Featured -->
+      <div class="project-card featured reveal">
+        <div class="project-thumb" style="background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(129,140,248,.08));">
+          <span style="font-size:4rem">🚀</span>
+          <div class="project-thumb-overlay"></div>
+        </div>
+        <div class="project-body">
+          <div class="project-eyebrow">⭐ Featured Project — Built Solo</div>
+          <div class="project-title">NextHire — AI-Powered Job Prep Platform</div>
+          <div class="project-desc">
+            A full-stack AI-driven job preparation platform built entirely solo from ideation to deployment.
+            Features AI-generated interview questions, resume feedback, and mock interview sessions powered
+            by Google Gemini AI. Users authenticate via JWT, track their progress, and get personalized
+            preparation paths based on target roles. Built with a clean, scalable REST API architecture
+            and a fast React frontend.
+          </div>
+          <div class="project-stack">
+            <span class="stack-tag">React.js</span>
+            <span class="stack-tag">Node.js</span>
+            <span class="stack-tag">Express.js</span>
+            <span class="stack-tag">MongoDB</span>
+            <span class="stack-tag">JWT Auth</span>
+            <span class="stack-tag">Gemini AI</span>
+            <span class="stack-tag">REST API</span>
+            <span class="stack-tag">Vite</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/Aman-2895" class="proj-link" target="_blank">
+              <i class="fab fa-github"></i> Source Code
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAC Services Website -->
+      <div class="project-card reveal">
+        <div class="project-thumb" style="background:linear-gradient(135deg,rgba(26,60,110,.3),rgba(35,84,164,.1));">
+          <span style="font-size:3rem">🏢</span>
+          <div class="project-thumb-overlay"></div>
+        </div>
+        <div class="project-body">
+          <div class="project-eyebrow">Team Lead · Production</div>
+          <div class="project-title">TAC Services — Company Website</div>
+          <div class="project-desc">
+            Full MERN stack company website for TAC Services. Led a 4-member team to build
+            and deploy this from scratch — contact form with MongoDB storage, live training
+            batch status from API, scroll animations, and full mobile responsiveness.
+          </div>
+          <div class="project-stack">
+            <span class="stack-tag">React.js</span>
+            <span class="stack-tag">Node.js</span>
+            <span class="stack-tag">Express.js</span>
+            <span class="stack-tag">MongoDB</span>
+            <span class="stack-tag">Vite</span>
+            <span class="stack-tag">Railway</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/TAC-Services-25/TAC-Website" class="proj-link" target="_blank">
+              <i class="fab fa-github"></i> Repository
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- FiTech -->
+      <div class="project-card reveal">
+        <div class="project-thumb" style="background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(234,88,12,.05));">
+          <span style="font-size:3rem">💪</span>
+          <div class="project-thumb-overlay"></div>
+        </div>
+        <div class="project-body">
+          <div class="project-eyebrow">Frontend · Responsive</div>
+          <div class="project-title">FiTech — Gym & Fitness Website</div>
+          <div class="project-desc">
+            A fully responsive gym and fitness website with modern UI design, smooth
+            animations, membership plans section, trainer profiles, and class schedules.
+            Focused on performance, mobile-first design, and conversion-optimized layout.
+          </div>
+          <div class="project-stack">
+            <span class="stack-tag">HTML5</span>
+            <span class="stack-tag">CSS3</span>
+            <span class="stack-tag">JavaScript</span>
+            <span class="stack-tag">Responsive Design</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/Aman-2895" class="proj-link" target="_blank">
+              <i class="fab fa-github"></i> Source Code
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ──────────────────────────────────────────── -->
+<section id="skills">
+  <div class="wrapper">
+    <div class="section-header-row">
+      <div>
+        <span class="section-label reveal">Skills</span>
+        <h2 class="section-title reveal">My technical toolkit</h2>
+      </div>
+    </div>
+    <div class="skills-grid">
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title"><i class="fas fa-layer-group"></i> Frontend</div>
+        <div class="skill-tags">
+          <span class="skill-tag highlight">React.js</span>
+          <span class="skill-tag highlight">Vite</span>
+          <span class="skill-tag highlight">React Router</span>
+          <span class="skill-tag">Tailwind CSS</span>
+          <span class="skill-tag">HTML5</span>
+          <span class="skill-tag">CSS3</span>
+          <span class="skill-tag">JavaScript (ES6+)</span>
+          <span class="skill-tag">Responsive Design</span>
+        </div>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title"><i class="fas fa-server"></i> Backend</div>
+        <div class="skill-tags">
+          <span class="skill-tag highlight">Node.js</span>
+          <span class="skill-tag highlight">Express.js</span>
+          <span class="skill-tag highlight">REST APIs</span>
+          <span class="skill-tag highlight">JWT</span>
+          <span class="skill-tag">Middleware</span>
+          <span class="skill-tag">Authentication</span>
+          <span class="skill-tag">API Design</span>
+        </div>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title"><i class="fas fa-database"></i> Database</div>
+        <div class="skill-tags">
+          <span class="skill-tag highlight">MongoDB</span>
+          <span class="skill-tag highlight">Mongoose</span>
+          <span class="skill-tag">PostgreSQL</span>
+          <span class="skill-tag">Cursor Pagination</span>
+          <span class="skill-tag">MongoDB Atlas</span>
+          <span class="skill-tag">Schema Design</span>
+        </div>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title"><i class="fas fa-robot"></i> AI & Integrations</div>
+        <div class="skill-tags">
+          <span class="skill-tag highlight">Gemini AI</span>
+          <span class="skill-tag">AI Integration</span>
+          <span class="skill-tag">Prompt Engineering</span>
+          <span class="skill-tag">API Integration</span>
+        </div>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title"><i class="fas fa-tools"></i> Tools & DevOps</div>
+        <div class="skill-tags">
+          <span class="skill-tag highlight">Git & GitHub</span>
+          <span class="skill-tag">VS Code</span>
+          <span class="skill-tag">Postman</span>
+          <span class="skill-tag">Railway</span>
+          <span class="skill-tag">Vercel</span>
+          <span class="skill-tag">MongoDB Atlas</span>
+          <span class="skill-tag">npm</span>
+        </div>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title"><i class="fas fa-users-cog"></i> Professional</div>
+        <div class="skill-tags">
+          <span class="skill-tag highlight">Team Leadership</span>
+          <span class="skill-tag">Agile / Sprints</span>
+          <span class="skill-tag">Code Review</span>
+          <span class="skill-tag">Problem Solving</span>
+          <span class="skill-tag">Communication</span>
+          <span class="skill-tag">Mentoring</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── EDUCATION ───────────────────────────────────────── -->
+<section id="education">
+  <div class="wrapper">
+    <span class="section-label reveal">Education</span>
+    <h2 class="section-title reveal" style="margin-bottom:2rem">Academic background</h2>
+    <div style="display:flex;flex-direction:column;gap:1.2rem">
+      <div class="edu-card reveal">
+        <div class="edu-icon">🎓</div>
+        <div>
+          <div class="edu-degree">Master of Computer Applications (MCA)</div>
+          <div class="edu-school">KIET Group of Institutions, Ghaziabad</div>
+          <div class="edu-meta">2025 – 2027 · Expected Graduation: 2027</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ─────────────────────────────────────────── -->
+<section id="contact">
+  <div class="wrapper">
+    <div class="section-header-row">
+      <div>
+        <span class="section-label reveal">Contact</span>
+        <h2 class="section-title reveal">Let's work together</h2>
+        <p class="section-sub reveal">
+          Open to full-time roles, freelance projects, and collaborations.
+          Book a free 30-minute call directly on my calendar.
+        </p>
+      </div>
+    </div>
+
+    <div class="contact-wrapper">
+      <div class="contact-info reveal">
+        <a class="contact-item" href="mailto:amangoel2895@gmail.com">
+          <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <h4>Email</h4>
+            <p>amangoel2895@gmail.com</p>
+          </div>
+        </a>
+        <a class="contact-item" href="https://github.com/Aman-2895" target="_blank">
+          <div class="contact-icon"><i class="fab fa-github"></i></div>
+          <div>
+            <h4>GitHub</h4>
+            <p>github.com/Aman-2895</p>
+          </div>
+        </a>
+        <a class="contact-item" href="https://www.linkedin.com/in/amangoyal2895" target="_blank">
+          <div class="contact-icon"><i class="fab fa-linkedin"></i></div>
+          <div>
+            <h4>LinkedIn</h4>
+            <p>linkedin.com/in/amangoyal2895</p>
+          </div>
+        </a>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <h4>Location</h4>
+            <p>Ghaziabad, NCR, India · Remote OK</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fas fa-clock"></i></div>
+          <div>
+            <h4>Availability</h4>
+            <p>Mon – Sat, 10 AM – 7 PM IST</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cal.com embed -->
+      <div class="cal-container reveal">
+        <div id="my-cal-inline"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      © <span id="yr"></span> Aman Goyal · Built with <span>♥</span> in Ghaziabad
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/Aman-2895" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://www.linkedin.com/in/amangoyal2895" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="mailto:amangoel2895@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+    </div>
+  </div>
+</footer>
+
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+<!-- ── FLOATING DOCK (Aceternity-style) ────────────────── -->
+<div id="dock-wrap">
+  <nav id="dock" aria-label="Quick navigation">
+    <a class="dock-item" href="#hero" data-tip="Home"><i class="fas fa-house"></i><span class="dock-tooltip">Home</span></a>
+    <a class="dock-item" href="mailto:amangoel2895@gmail.com" data-tip="Email"><i class="fas fa-envelope"></i><span class="dock-tooltip">Email</span></a>
+    <a class="dock-item" href="https://www.linkedin.com/in/amangoyal2895" target="_blank" data-tip="LinkedIn"><i class="fab fa-linkedin"></i><span class="dock-tooltip">LinkedIn</span></a>
+    <a class="dock-item" href="https://github.com/Aman-2895" target="_blank" data-tip="GitHub"><i class="fab fa-github"></i><span class="dock-tooltip">GitHub</span></a>
+    <a class="dock-item" href="#contact" data-tip="Contact"><i class="fas fa-paper-plane"></i><span class="dock-tooltip">Contact</span></a>
+  </nav>
+</div>
+
+<!-- ── CAL.COM EMBED ───────────────────────────────────── -->
+<!--
+  SETUP: Replace YOUR_CAL_USERNAME below with your actual Cal.com username.
+  Steps:
+    1. Go to https://cal.com and sign up
+    2. Create a free "30 Min Meeting" event type
+    3. Your username is shown in your Cal.com profile URL
+    4. Replace YOUR_CAL_USERNAME in both places below
+-->
+<script type="text/javascript">
+(function (C, A, L) {
+  let p = function (a, ar) { a.q.push(ar); };
+  let d = C.document;
+  C.Cal = C.Cal || function () {
+    let cal = C.Cal; let ar = arguments;
+    if (!cal.loaded) {
+      cal.ns = {}; cal.q = cal.q || [];
+      d.head.appendChild(d.createElement("script")).src = A;
+      cal.loaded = true;
+    }
+    if (ar[0] === L) {
+      const api = function () { p(api, arguments); };
+      const namespace = ar[1];
+      api.q = api.q || [];
+      typeof namespace === "string" ? (cal.ns[namespace] = api) && p(api, ar) : p(cal, ar);
+      return;
+    }
+    p(cal, ar);
+  };
+})(window, "https://app.cal.com/embed/embed.js", "init");
+
+Cal("init", { origin: "https://app.cal.com" });
+
+Cal("inline", {
+  elementOrSelector: "#my-cal-inline",
+  calLink: "aman-goyal-f0ygcy/30min",   // ← replace this
+  layout: "month_view"
+});
+
+Cal("ui", {
+  styles: { branding: { brandColor: "#3B82F6" } },
+  hideEventTypeDetails: false,
+  layout: "month_view"
+});
+</script>
+
+<script>
+  // Year
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Navbar scroll shadow
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+    document.getElementById('btt').classList.toggle('show', window.scrollY > 400);
+  });
+
+  // Hamburger
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  let open = false;
+  hamburger.addEventListener('click', () => {
+    open = !open;
+    mobileMenu.style.display = open ? 'flex' : 'none';
+  });
+  document.querySelectorAll('.mob-link').forEach(l =>
+    l.addEventListener('click', () => { open = false; mobileMenu.style.display = 'none'; })
+  );
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 70);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
+
+  // Floating dock — macOS-style magnify-on-hover (vanilla port of the
+  // Aceternity "Floating Dock" component, which normally requires React +
+  // Framer Motion; this uses plain JS so it drops into any static site).
+  (function () {
+    const dock = document.getElementById('dock');
+    const items = Array.from(dock.querySelectorAll('.dock-item'));
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function magnify(mouseX) {
+      items.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        const center = rect.left + rect.width / 2;
+        const distance = Math.abs(mouseX - center);
+        const maxDistance = 110;
+        const baseSize = 36;
+        const maxSize = 54;
+        let size = baseSize;
+        if (distance < maxDistance) {
+          const falloff = 1 - distance / maxDistance;
+          size = baseSize + (maxSize - baseSize) * falloff;
+        }
+        item.style.width = size + 'px';
+        item.style.height = size + 'px';
+        item.style.fontSize = (0.9 * (size / baseSize)) + 'rem';
+      });
+    }
+
+    function reset() {
+      items.forEach((item) => {
+        item.style.width = '';
+        item.style.height = '';
+        item.style.fontSize = '';
+      });
+    }
+
+    if (!prefersReduced) {
+      dock.addEventListener('mousemove', (e) => magnify(e.clientX));
+      dock.addEventListener('mouseleave', reset);
+    }
+  })();
+</script>
+</body>
+</html>
